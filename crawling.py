@@ -14,6 +14,7 @@ from datetime import datetime
 import tweepy
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 GAME_NAME_LIST = [
     "弐寺"
