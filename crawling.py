@@ -3,6 +3,7 @@
 rootディレクトリから"~/documents/bemani/"上にあるこのコードを実行する必要がある
 """
 
+
 import sys
 import requests
 import traceback
@@ -39,9 +40,7 @@ CSV_NAME_LIST = ["./documents/bemani/ranking50.csv", "./documents/bemani/ranking
 COLUMNS_NAME_LIST = ['time', 'IIDX', 'DDR', 'DANCERUSH', 'GITADORA', 'jubeat', "pop'n", 'SDVX', 'NOSTALSIA']
 GRAPH_NAME_LIST = ['./documents/bemani/graph50.png','./documents/bemani/graph100.png']
 GRAPH_TITLE_LIST = ['transitive graph(rank 50)', 'transitive graph(rank 100)']
-# リクエスト失敗時のリトライ回数
 MAX_RETRY_COUNT = 10
-# リトライ時待機時間
 RETRY_WAIT_TIME = 5
 
 # Twitter各種キー
@@ -146,9 +145,18 @@ def make_graph(file_name: str, save_name: str, graph_title: str, columns_name_li
     df.columns = columns_name_list
     df = df.set_index(columns_name_list[0])
     df.index = pd.to_datetime(df.index, format='%m/%d %H:%M')
-    plt.figure()
-    df.plot()
+    fig, ax = plt.subplots(figsize=(12, 6))
+    for columns_name in columns_name_list[1:]:
+        ax.plot(df.index, df[columns_name], label=columns_name)
+    # 軸目盛の設定
+    ax.xaxis.set_major_locator(mdates.DayLocator(bymonthday=None, interval=1, tz=None))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d"))
+    ax.legend()
+    ax.grid()
+    
+    # グラフタイトル
     plt.title(graph_title)
+    
     plt.savefig(save_name)
     plt.close('all')
 
